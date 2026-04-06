@@ -7,6 +7,9 @@ certifi
 pymongo[srv]==3.11
 scikit-learn
 pyaml
-mlflow
+mlflow==3.5.1
+dagshub
+fastapi
+uvicorn
 
 # -e .

@@ -22,6 +22,9 @@ from sklearn.ensemble import (
     RandomForestClassifier
 )
 import mlflow
+import dagshub
+dagshub.init(repo_owner='sailesh5419', repo_name='Network-Security', mlflow=True)
+
 
 
 class ModelTrainer:
@@ -35,7 +38,8 @@ class ModelTrainer:
     def track_mlflow(self, best_model, train_metric, test_metric):
         try:
             mlflow.end_run()
-            mlflow.set_tracking_uri("sqlite:///mlflow.db")
+            # mlflow.set_tracking_uri("sqlite:///mlflow.db")
+            
             mlflow.set_experiment("NetworkSecurityExperiment")
 
             print("Tracking URI:", mlflow.get_tracking_uri())
@@ -55,6 +59,31 @@ class ModelTrainer:
 
         except Exception as e:
             raise NetWorkSecurityException(e, sys)
+
+
+    # def track_mlflow(self, best_model, train_metric, test_metric):
+    #     try:
+    #         mlflow.end_run()
+    #         mlflow.set_tracking_uri("sqlite:///mlflow.db")
+    #         mlflow.set_experiment("NetworkSecurityExperiment")
+
+    #         print("Tracking URI:", mlflow.get_tracking_uri())
+
+    #         with mlflow.start_run() as run:
+    #             print("Run ID:", run.info.run_id)
+
+    #             mlflow.log_metric("train_f1_score", train_metric.f1_score)
+    #             mlflow.log_metric("train_precision_score", train_metric.precision_score)
+    #             mlflow.log_metric("train_recall_score", train_metric.recall_score)
+
+    #             mlflow.log_metric("test_f1_score", test_metric.f1_score)
+    #             mlflow.log_metric("test_precision_score", test_metric.precision_score)
+    #             mlflow.log_metric("test_recall_score", test_metric.recall_score)
+
+    #             mlflow.sklearn.log_model(sk_model=best_model, name="model")
+
+    #     except Exception as e:
+    #         raise NetWorkSecurityException(e, sys)
         
     # def track_mlflow(self, best_model, classificationmetric):
     #         with mlflow.start_run():
@@ -150,6 +179,9 @@ class ModelTrainer:
 
             Network_Model = NetworkModel(preprocessor=preprocessor, model=best_model)
             save_object(self.model_trainer_config.trained_model_file_path, obj=Network_Model)
+
+
+            save_object("final_models/model.pkl", best_model)
 
             # Model Trainer Artifact
             model_trainer_artifact = ModelTrainerArtifact(trained_model_file_path = self.model_trainer_config.trained_model_file_path,
